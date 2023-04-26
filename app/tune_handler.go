@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/saleebm/music-mood-analyzer/shared"
 	"github.com/zmb3/spotify/v2"
-	"log"
 	"time"
 )
 
@@ -18,27 +20,37 @@ func NewTuneHandler(limiter <-chan time.Time, client *spotify.Client) *TuneHandl
 }
 
 func (tuneHandler *TuneHandler) HandleMsg(msg amqp.Delivery) {
-	reqTrackId := string(msg.Body)
-	tuneHandler.processTrack(reqTrackId)
+	var track *shared.Track
+	err := json.Unmarshal(msg.Body, track)
+	moodStore, err := tuneHandler.processTrack(track)
+	fmt.Printf("%+v\n", moodStore)
+	shared.FailOnError(err, "Failed to process track")
 }
 
-func (tuneHandler *TuneHandler) processTrack(reqTrackId string) {
+func (tuneHandler *TuneHandler) processTrack(track *shared.Track) (*MoodStore, error) {
 	<-tuneHandler.limiter
-	fmt.Println("request", time.Now())
-	fmt.Printf("Message: %s\n", reqTrackId)
-	spotifyAgent := NewSpotifyAgent(reqTrackId, tuneHandler.client)
+	trackId := track.TrackId
+	fmt.Println("--------\nRequest", time.Now().Format("2006-01-02 3:4:5 pm"))
+	fmt.Printf("Message: %s\n", trackId)
+	spotifyAgent := NewSpotifyAgent(trackId, tuneHandler.client)
 
 	features, err := spotifyAgent.GetAudioFeatures()
 	if err != nil {
-		log.Printf("Error getting audio features for %s: %v", reqTrackId, err)
-		return
+		return nil, errors.New(fmt.Sprintf("Error getting audio Features for %s: %v", trackId, err))
 	}
 
-	moodStore := spotifyAgent.ProcessAudioAnalysis(features)
-	if err != nil {
-		log.Printf("Error processing audio analysis for %s: %v", reqTrackId, err)
-		return
+	moodStore := NewMoodStore(features, track)
+	mood := moodStore.GetSentiment(features)
+	color := SentimentColors[mood]
+	if len(mood) > 0 && len(color) == 0 {
+		fmt.Printf("Missing Color for Mood, %s\n", mood)
 	}
+	moodStore.Mood = mood
+	moodStore.Color = color
 
-	fmt.Printf("\tMood for %s: %s\n\tColor: %s\n", reqTrackId, moodStore.mood, moodStore.color)
+	moodStore.ExportSentiment()
+	moodStore.WriteResults()
+
+	fmt.Printf("Mood for %s: %s\nColor: %s\n", trackId, moodStore.Mood, moodStore.Color)
+	return moodStore, nil
 }

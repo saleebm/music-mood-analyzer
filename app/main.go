@@ -2,21 +2,29 @@ package main
 
 import (
 	"context"
+	"github.com/joho/godotenv"
 	"github.com/saleebm/music-mood-analyzer/shared"
 	"log"
+	"os"
 	"time"
 )
 
 func main() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Missing .env, %s", err.Error())
+	}
 	// Initialize RabbitMQ connection and SpotifyAgent client
-	//todo conn string
-	rabbitConnStr := "amqp://guest:guest@localhost:5672/"
+	rabbitConnStr := os.Getenv("RABBITMQ_CONN_STR")
+	if len(rabbitConnStr) == 0 {
+		log.Fatalf("Missing rabbit mq conn str")
+	}
 
 	rabbitConn, err := ConnectToRabbitMQ(rabbitConnStr)
 	shared.FailOnError(err, "Error connecting to RabbitMQ")
 	defer rabbitConn.Close()
 
-	limiter := time.Tick(200 * time.Millisecond)
+	limiter := time.Tick(1000 * time.Millisecond) // process one every second
 
 	ctx := context.Background()
 	client := NewSpotifyClient(ctx)

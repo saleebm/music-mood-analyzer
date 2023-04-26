@@ -31,7 +31,7 @@ func ConsumeSongs(conn *amqp.Connection, queueName string, handleMessage func(am
 
 	go func() {
 		for msg := range messages {
-			handleMessage(msg)
+			handleMessage(msg) // todo consider requeue back if failed
 			msg.Ack(false)
 		}
 	}()
