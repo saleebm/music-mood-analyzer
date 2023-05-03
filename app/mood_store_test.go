@@ -25,6 +25,7 @@ func TestMoodStoreExportSentiment(t *testing.T) {
 		t.Fatalf("Failed to read Features: %s", err.Error())
 	}
 	fmt.Printf("%+v\n", payload)
-	moodStore := MoodStore{Features: payload, TrackId: "0cOyhnhy13lc5G5nr4EF0q", Mood: "happy", Color: "#FFFF00"}
+	uuidsSlice := []string{"5a6d6ee9-5d8b-4569-b9d0-563a2c850591"}[:]
+	moodStore := MoodStore{Features: payload, TrackId: "20bJBbPapGQ4bqs0YcA9xY", Mood: "happy", Color: "#FFFF00", Uuids: uuidsSlice}
 	moodStore.ExportSentiment()
 }

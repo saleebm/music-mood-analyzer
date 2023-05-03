@@ -30,6 +30,7 @@ func queue(track *shared.Track) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	fmt.Printf("track: %+v\n", track)
 	body, err := json.Marshal(track)
 	if err != nil {
 		fmt.Println("Unable to marshall track", err)
@@ -42,8 +43,10 @@ func queue(track *shared.Track) {
 		false,          // mandatory
 		false,          // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        body,
+			ContentType:     "text/plain",
+			Body:            body,
+			DeliveryMode:    amqp.Persistent,
+			ContentEncoding: "",
 		})
 	shared.FailOnError(err, "Failed to publish a message")
 	log.Printf(" [x] Sent %s\n", track.TrackId)

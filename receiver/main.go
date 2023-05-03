@@ -26,13 +26,14 @@ func main() {
 
 func handleTrack(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
+		fmt.Println("wrong method")
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
 	var track *shared.Track
 	//todo fix this and test using a test response writer
-	err := json.NewDecoder(r.Body).Decode(track)
+	err := json.NewDecoder(r.Body).Decode(&track)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "Error decoding JSON: %v", err)
