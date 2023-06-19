@@ -114,9 +114,9 @@ func (moodStore *MoodStore) WriteResults() {
 	if env == "development" {
 		// Set tmp directory to the path of the Go folder
 		goPath := os.Getenv("GOPATH")
-		tmpDir = goPath + "/saleebm/music-Mood-analyzer/tmp/"
+		tmpDir = goPath + "/saleebm/music-Mood-analyzer/tmp"
 	}
-	filename := fmt.Sprintf("%s%s-%s-%s.json", tmpDir, moodStore.TrackId, mood, color)
+	filename := fmt.Sprintf("%s/%s-%s-%s.json", tmpDir, moodStore.TrackId, mood, color)
 	exists, err := shared.Exists(filename)
 	if exists {
 		fmt.Println("File " + filename + " already exists")
