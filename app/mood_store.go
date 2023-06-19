@@ -11,18 +11,32 @@ import (
 )
 
 var SentimentColors = map[string]string{
-	"Happy":      "#FDE74C",
-	"Excited":    "#FFA07A",
-	"Lively":     "#FF5733",
-	"Melancholy": "#6495ED",
-	"Serene":     "#ADD8E6",
-	"Hopeful":    "#90EE90",
-	"Fiery":      "#FF6347",
-	"Anxious":    "#8B0000",
-	"Brooding":   "#2F4F4F",
-	"Easygoing":  "#F5DEB3",
-	"Dreamy":     "#D8BFD8",
-	"Peaceful":   "#F0E68C",
+	"Angry":        "#bf0000",
+	"Fiery":        "#f74959",
+	"Lively":       "#ff5733",
+	"Nervous":      "#f9a044",
+	"Anxious":      "#f05404",
+	"Worried":      "#e1a90b",
+	"Concerned":    "#ea9708",
+	"Confused":     "#f7bf73",
+	"Afraid":       "#f7db16",
+	"Surprised":    "#f8d23b",
+	"Peaceful":     "#f0e68c",
+	"Excited":      "#c8e719",
+	"Amazed":       "#00a900",
+	"Happy":        "#fde74c",
+	"Hopeful":      "#90ee90",
+	"Easygoing":    "#f5deb3",
+	"Brooding":     "#2f4f4f",
+	"Grief":        "#0070ab",
+	"Melancholy":   "#6495ed",
+	"Serene":       "#add8e6",
+	"Disappointed": "#0033c8",
+	"Upset":        "#4600c2",
+	"Disdain":      "#6800a1",
+	"Horrify":      "#cd21c3",
+	"Mysterious":   "#ce0078",
+	"Cranky":       "#f54587",
 }
 
 type MoodStore struct {
@@ -47,30 +61,56 @@ func (moodStore *MoodStore) GetSentiment(features *spotify.AudioFeatures) string
 	fmt.Printf("%v, %v, %v, %v\n", valence, energy, danceability, tempo)
 
 	// Determine the sentiment based on the audio Features
-	if danceability >= 0.5 && energy >= 0.5 && tempo < 100 && valence >= 0.5 {
-		return "Happy"
-	} else if danceability >= 0.7 && energy > 0.7 && tempo >= 100 && valence >= 0.3 {
-		return "Excited"
-	} else if danceability >= 0.5 && energy >= 0.7 && tempo >= 120 && valence >= 0.5 {
-		return "Lively"
-	} else if danceability <= 0.5 && energy <= 0.5 && tempo <= 80 && valence <= 0.5 {
-		return "Melancholy"
-	} else if danceability <= 0.5 && energy <= 0.5 && tempo <= 80 && valence > 0.7 {
-		return "Serene"
-	} else if danceability >= 0.5 && energy >= 0.7 && tempo < 120 && valence >= 0.7 {
-		return "Hopeful"
-	} else if danceability < 0.75 && energy >= 0.5 && tempo >= 80 && tempo < 120 && valence < 0.7 {
+	if danceability < 0.5 && energy >= 0.75 && tempo < 80 && valence < 0.3 {
+		return "Angry"
+	} else if danceability >= 0.7 && energy >= 0.8 && tempo > 60 && tempo < 120 && valence >= 0.7 {
 		return "Fiery"
-	} else if danceability < 0.5 && energy >= 0.5 && tempo > 80 && tempo < 120 && valence < 0.7 {
+	} else if danceability >= 0.7 && energy >= 0.5 && energy < 0.8 && tempo >= 120 && valence >= 0.4 && valence < 0.7 {
+		return "Lively"
+	} else if danceability <= 0.4 && energy < 0.6 && tempo >= 100 && valence <= 0.5 {
+		return "Nervous"
+	} else if danceability <= 0.6 && energy >= 0.6 && tempo >= 80 && valence > 0.2 && valence <= 0.5 {
 		return "Anxious"
-	} else if danceability < 0.5 && energy >= 0.5 && tempo >= 120 && valence < 0.7 {
-		return "Brooding"
-	} else if danceability < 0.5 && energy >= 0.5 && energy < 0.75 && tempo < 80 && valence < 0.7 {
-		return "Easygoing"
-	} else if danceability < 0.5 && energy <= 0.5 && tempo > 60 && tempo < 80 && valence < 0.7 {
-		return "Dreamy"
-	} else if danceability < 0.5 && energy <= 0.5 && tempo <= 80 && valence <= 0.7 {
+	} else if danceability <= 0.4 && energy <= 0.5 && tempo > 80 && valence <= 0.4 {
+		return "Worried"
+	} else if danceability <= 0.5 && energy < 0.6 && tempo < 120 && valence > 0.4 && valence < 0.7 {
+		return "Concerned"
+	} else if danceability > 0.5 && energy <= 0.5 && tempo <= 100 && valence > 0.4 {
+		return "Confused"
+	} else if danceability < 0.6 && energy < 0.6 && tempo < 120 && valence < 0.3 {
+		return "Afraid"
+	} else if danceability < 0.5 && energy <= 0.4 && tempo <= 90 && valence >= 0.7 {
 		return "Peaceful"
+	} else if danceability >= 0.7 && energy >= 0.8 && tempo >= 120 && valence >= 0.7 {
+		return "Excited"
+	} else if danceability >= 0.3 && danceability < 0.7 && energy >= 0.6 && tempo > 120 && valence >= 0.7 {
+		return "Amazed"
+	} else if danceability >= 0.7 && energy >= 0.7 && tempo < 120 && valence >= 0.7 {
+		return "Happy"
+	} else if danceability >= 0.5 && energy >= 0.3 && energy < 0.7 && tempo < 120 && valence >= 0.7 {
+		return "Hopeful"
+	} else if danceability >= 0.5 && energy < 0.5 && tempo < 120 && valence >= 0.5 {
+		return "Easygoing"
+	} else if danceability > 0.2 && danceability <= 0.5 && energy <= 0.5 && tempo < 80 && valence <= 0.3 {
+		return "Brooding"
+	} else if danceability <= 0.4 && energy <= 0.4 && tempo > 90 && valence <= 0.3 {
+		return "Grief"
+	} else if danceability > 0.4 && energy <= 0.4 && tempo <= 90 && valence <= 0.3 {
+		return "Melancholy"
+	} else if danceability < 0.5 && energy <= 0.4 && tempo <= 90 && valence > 0.3 && valence < 0.7 {
+		return "Serene"
+	} else if danceability <= 0.5 && energy <= 0.5 && tempo < 80 && valence <= 0.4 {
+		return "Disappointed"
+	} else if danceability <= 0.2 && energy < 0.6 && tempo <= 80 && valence <= 0.3 {
+		return "Upset"
+	} else if danceability <= 0.3 && energy >= 0.6 && tempo < 100 && valence <= 0.4 {
+		return "Disdain"
+	} else if danceability <= 0.3 && energy >= 0.7 && tempo >= 100 && valence <= 0.2 {
+		return "Horrify"
+	} else if danceability > 0.3 && danceability <= 0.6 && energy < 0.6 && tempo < 100 && valence <= 0.5 {
+		return "Mysterious"
+	} else if danceability <= 0.3 && energy <= 0.5 && tempo > 80 && valence <= 0.3 {
+		return "Cranky"
 	} else {
 		fmt.Printf("Missing Mood for\n\tValence: %v,\t\nEnergy: %v,\t\nTempo: %v,\t\nDanceability: %v\n", valence, energy, tempo, danceability)
 		return ""
