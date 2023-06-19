@@ -120,3 +120,5 @@ tmp/*
 
 .env
 !.env.example
+
+bin

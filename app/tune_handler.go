@@ -6,7 +6,7 @@ import (
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/saleebm/music-mood-analyzer/shared"
-	"github.com/zmb3/spotify/v2"
+	spotify "github.com/zmb3/spotify/v2"
 	"log"
 	"time"
 )

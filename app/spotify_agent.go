@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/zmb3/spotify/v2"
+	spotify "github.com/zmb3/spotify/v2"
 	//"time"
 )
 

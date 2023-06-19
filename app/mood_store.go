@@ -49,7 +49,7 @@ func (moodStore *MoodStore) GetSentiment(features *spotify.AudioFeatures) string
 	// Determine the sentiment based on the audio Features
 	if danceability >= 0.5 && energy >= 0.5 && tempo < 100 && valence >= 0.5 {
 		return "Happy"
-	} else if danceability >= 0.7 && energy < 0.7 && tempo >= 100 && valence >= 0.5 {
+	} else if danceability >= 0.7 && energy > 0.7 && tempo >= 100 && valence >= 0.3 {
 		return "Excited"
 	} else if danceability >= 0.5 && energy >= 0.7 && tempo >= 120 && valence >= 0.5 {
 		return "Lively"
@@ -59,7 +59,7 @@ func (moodStore *MoodStore) GetSentiment(features *spotify.AudioFeatures) string
 		return "Serene"
 	} else if danceability >= 0.5 && energy >= 0.7 && tempo < 120 && valence >= 0.7 {
 		return "Hopeful"
-	} else if danceability < 0.5 && energy >= 0.5 && tempo >= 80 && tempo < 120 && valence < 0.7 {
+	} else if danceability < 0.75 && energy >= 0.5 && tempo >= 80 && tempo < 120 && valence < 0.7 {
 		return "Fiery"
 	} else if danceability < 0.5 && energy >= 0.5 && tempo > 80 && tempo < 120 && valence < 0.7 {
 		return "Anxious"
@@ -90,7 +90,7 @@ func (moodStore *MoodStore) ExportSentiment() {
 		fmt.Println("Unable to encode Mood store", err)
 		return
 	}
-	fmt.Printf("%+v\n", w)
+	//fmt.Printf("%+v\n", w)
 	req, err := http.NewRequest("POST", endpointUrl, w)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Secret", endpointSecret)
