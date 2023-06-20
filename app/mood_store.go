@@ -66,7 +66,7 @@ func (moodStore *MoodStore) GetSentiment(features *spotify.AudioFeatures) string
 		return "Angry"
 	} else if danceability >= 0.5 && energy >= 0.7 && tempo > 60 && tempo < 120 && valence >= 0.7 {
 		return "Fiery"
-	} else if danceability >= 0.6 && energy >= 0.5 && energy < 0.8 && tempo >= 120 && valence >= 0.3 && valence < 0.8 {
+	} else if danceability >= 0.6 && energy >= 0.5 && energy < 0.8 && tempo >= 100 && valence < 0.8 {
 		return "Lively"
 	} else if danceability <= 0.4 && energy < 0.6 && tempo >= 100 && valence <= 0.5 {
 		return "Nervous"
