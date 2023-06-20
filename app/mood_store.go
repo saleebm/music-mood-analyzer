@@ -18,7 +18,7 @@ var SentimentColors = map[string]string{
 	"Anxious":      "#f05404",
 	"Worried":      "#e1a90b",
 	"Concerned":    "#ea9708",
-	"Confused":     "#f7bf73",
+	"Ambitious":    "#f7bf73",
 	"Amusement":    "#009b60",
 	"Afraid":       "#f7db16",
 	"Surprised":    "#f8d23b",
@@ -154,7 +154,7 @@ func (moodStore *MoodStore) getMood(features *spotify.AudioFeatures) string {
 	} else if danceability <= 0.5 && energy < 0.6 && tempo < 120 && valence > 0.4 && valence < 0.7 {
 		return "Concerned"
 	} else if danceability > 0.5 && energy <= 0.5 && tempo <= 100 && valence > 0.4 {
-		return "Confused"
+		return "Ambitious"
 	} else if danceability > 0.7 && energy >= 0.4 && energy < 0.8 && tempo > 120 && valence >= 0.7 {
 		return "Amusement"
 	} else if danceability < 0.6 && energy < 0.6 && tempo < 120 && valence < 0.3 {
