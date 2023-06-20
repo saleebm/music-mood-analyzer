@@ -46,15 +46,8 @@ func (tuneHandler *TuneHandler) processTrack(track *shared.Track) (*MoodStore, e
 	}
 
 	moodStore := NewMoodStore(features, track)
-	mood := moodStore.GetSentiment(features)
-	color := SentimentColors[mood]
-	if len(mood) > 0 && len(color) == 0 {
-		fmt.Printf("Missing Color for Mood, %s\n", mood)
-	}
-	moodStore.Mood = mood
-	moodStore.Color = color
-
-	moodStore.ExportSentiment()
+	moodStore.GetSentiment(features)
+	moodStore.ExportSentiment() // export back to node
 	moodStore.WriteResults()
 
 	fmt.Printf("Mood for %s: %s\nColor: %s\n", trackId, moodStore.Mood, moodStore.Color)
