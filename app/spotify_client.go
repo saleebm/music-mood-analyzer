@@ -25,6 +25,6 @@ func NewSpotifyClient(ctx context.Context) *spotify.Client {
 	shared.FailOnError(err, "couldn't get token")
 
 	httpClient := spotifyauth.New().Client(ctx, token)
-	client := spotify.New(httpClient)
+	client := spotify.New(httpClient, spotify.WithRetry(true))
 	return client
 }

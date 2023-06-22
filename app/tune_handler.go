@@ -1,23 +1,22 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/saleebm/music-mood-analyzer/shared"
-	spotify "github.com/zmb3/spotify/v2"
 	"log"
 	"time"
 )
 
 type TuneHandler struct {
 	limiter <-chan time.Time
-	client  *spotify.Client
 }
 
-func NewTuneHandler(limiter <-chan time.Time, client *spotify.Client) *TuneHandler {
-	return &TuneHandler{limiter: limiter, client: client}
+func NewTuneHandler(limiter <-chan time.Time) *TuneHandler {
+	return &TuneHandler{limiter: limiter}
 }
 
 func (tuneHandler *TuneHandler) HandleMsg(msg amqp.Delivery) {
@@ -38,7 +37,10 @@ func (tuneHandler *TuneHandler) processTrack(track *shared.Track) (*MoodStore, e
 	trackId := track.TrackId
 	fmt.Println("--------\nRequest", time.Now().Format("2006-01-02 3:4:5 pm"))
 	fmt.Printf("Message: %s\n", trackId)
-	spotifyAgent := NewSpotifyAgent(trackId, tuneHandler.client)
+
+	ctx := context.Background()
+	client := NewSpotifyClient(ctx)
+	spotifyAgent := NewSpotifyAgent(trackId, client)
 
 	features, err := spotifyAgent.GetAudioFeatures()
 	if err != nil {

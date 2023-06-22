@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"github.com/joho/godotenv"
 	"github.com/saleebm/music-mood-analyzer/shared"
 	"log"
@@ -26,9 +25,7 @@ func main() {
 
 	limiter := time.Tick(1000 * time.Millisecond) // process one every second
 
-	ctx := context.Background()
-	client := NewSpotifyClient(ctx)
-	tuneHandler := NewTuneHandler(limiter, client)
+	tuneHandler := NewTuneHandler(limiter)
 
 	err = ConsumeSongs(rabbitConn, "song_updates", tuneHandler.HandleMsg)
 	if err != nil {
