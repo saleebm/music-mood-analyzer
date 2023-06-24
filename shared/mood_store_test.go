@@ -1,10 +1,9 @@
-package main
+package shared
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/joho/godotenv"
-	"github.com/saleebm/music-mood-analyzer/shared"
 	"github.com/zmb3/spotify/v2"
 	"os"
 	"testing"
@@ -12,7 +11,7 @@ import (
 
 func TestMoodStoreExportSentiment(t *testing.T) {
 	err := godotenv.Load("../.env")
-	shared.FailOnError(err, "Failed to load env")
+	FailOnError(err, "Failed to load env")
 
 	fileName := "../tmp/0cOyhnhy13lc5G5nr4EF0q-happy-#FFFF00.json"
 	file, err := os.ReadFile(fileName)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/joho/godotenv"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/saleebm/music-mood-analyzer/shared"
 	"log"
 	"os"
@@ -21,12 +22,18 @@ func main() {
 
 	rabbitConn, err := ConnectToRabbitMQ(rabbitConnStr)
 	shared.FailOnError(err, "Error connecting to RabbitMQ")
-	defer rabbitConn.Close()
+	defer func(rabbitConn *amqp.Connection) {
+		err := rabbitConn.Close()
+		if err != nil {
+			log.Fatalln(err.Error())
+		}
+	}(rabbitConn)
 
 	limiter := time.Tick(1000 * time.Millisecond) // process one every second
 
-	tuneHandler := NewTuneHandler(limiter)
+	tuneHandler := shared.NewTuneHandler(limiter)
 
+	// consume songs at a minute per song, for background processing
 	err = ConsumeSongs(rabbitConn, "song_updates", tuneHandler.HandleMsg)
 	if err != nil {
 		log.Fatalf("Error consuming song updates: %v", err)

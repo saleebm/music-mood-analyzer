@@ -36,11 +36,17 @@ func handleTrack(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&track)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "Error decoding JSON: %v", err)
+		_, err := fmt.Fprintf(w, "Error decoding JSON: %v", err)
+		if err != nil {
+			return
+		}
 		return
 	}
 
-	fmt.Fprintf(w, "Received track ID: %s\nUUIDs for track: %+v", track.TrackId, track.Uuids)
+	_, err = fmt.Fprintf(w, "Received track ID: %s\nUUIDs for track: %+v", track.TrackId, track.Uuids)
+	if err != nil {
+		return
+	}
 	if len(track.TrackId) > 0 {
 		queue(track)
 	}

@@ -1,4 +1,4 @@
-package main
+package shared
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
-	"github.com/saleebm/music-mood-analyzer/shared"
 	"log"
 	"time"
 )
@@ -20,7 +19,7 @@ func NewTuneHandler(limiter <-chan time.Time) *TuneHandler {
 }
 
 func (tuneHandler *TuneHandler) HandleMsg(msg amqp.Delivery) {
-	var track *shared.Track
+	var track *Track
 	err := json.Unmarshal(msg.Body, &track)
 	if err != nil {
 		log.Printf("Unable to unmarshall track\n Error %s\n", err.Error())
@@ -28,10 +27,11 @@ func (tuneHandler *TuneHandler) HandleMsg(msg amqp.Delivery) {
 	}
 	moodStore, err := tuneHandler.processTrack(track)
 	fmt.Printf("%+v\n", moodStore)
-	shared.FailOnError(err, "Failed to process track")
+	FailOnError(err, "Failed to process track")
 }
 
-func (tuneHandler *TuneHandler) processTrack(track *shared.Track) (*MoodStore, error) {
+// processTrack Process and return the result of a mood store for a track
+func (tuneHandler *TuneHandler) processTrack(track *Track) (*MoodStore, error) {
 	<-tuneHandler.limiter
 	fmt.Printf("track %+v", track)
 	trackId := track.TrackId

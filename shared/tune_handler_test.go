@@ -1,8 +1,7 @@
-package main
+package shared
 
 import (
 	"context"
-	"github.com/saleebm/music-mood-analyzer/shared"
 	"testing"
 	"time"
 )
@@ -33,7 +32,7 @@ func TestTuneHandler(t *testing.T) {
 		limiter := time.Tick(200 * time.Millisecond)
 		tuneHandler := NewTuneHandler(limiter, client)
 
-		tuneHandler.processTrack(&shared.Track{TrackId: trackId})
+		tuneHandler.processTrack(&Track{TrackId: trackId})
 		// todo add assertions here to check the result
 	})
 	t.Run("multiple requests rate limit", func(t *testing.T) {
@@ -44,7 +43,7 @@ func TestTuneHandler(t *testing.T) {
 		tuneHandler := NewTuneHandler(limiter, client)
 
 		for i := 0; i < 10; i++ {
-			tuneHandler.processTrack(&shared.Track{TrackId: trackId})
+			tuneHandler.processTrack(&Track{TrackId: trackId})
 		}
 		// todo add assertions here to check the result
 	})

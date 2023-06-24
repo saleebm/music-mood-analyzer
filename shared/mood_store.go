@@ -1,10 +1,9 @@
-package main
+package shared
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/saleebm/music-mood-analyzer/shared"
 	"github.com/zmb3/spotify/v2"
 	"net/http"
 	"os"
@@ -48,7 +47,7 @@ type MoodStore struct {
 	Uuids    []string              `json:"uuids"`
 }
 
-func NewMoodStore(features *spotify.AudioFeatures, track *shared.Track) (moodStore *MoodStore) {
+func NewMoodStore(features *spotify.AudioFeatures, track *Track) (moodStore *MoodStore) {
 	moodStore = &MoodStore{Features: *features, TrackId: track.TrackId, Uuids: track.Uuids}
 	return // love it
 }
@@ -103,7 +102,7 @@ func (moodStore *MoodStore) WriteResults() {
 		tmpDir = goPath + "/saleebm/music-Mood-analyzer/tmp"
 	}
 	filename := fmt.Sprintf("%s/%s-%s-%s.json", tmpDir, moodStore.TrackId, mood, color)
-	exists, err := shared.Exists(filename)
+	exists, err := Exists(filename)
 	if exists {
 		fmt.Println("File " + filename + " already exists")
 		return
