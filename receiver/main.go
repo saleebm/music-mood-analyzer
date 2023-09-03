@@ -24,6 +24,7 @@ func main() {
 	}
 }
 
+// handleTrack get a track to queue into sentiment analysis processor
 func handleTrack(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		fmt.Println("wrong method")
